@@ -2,15 +2,6 @@ var fs = require('fs');
 
 var input = fs.readFileSync('./input.txt', 'utf8').split('\n');
 
-var frequencies = input.reduce((a, c) => {
-    for(var i = 0; i < c.trim().length; i++) {
-        a[i] = a[i] || { one: 0, zero: 0 };
-        a[i].one += (c[i] == '1' ? 1 : 0);
-        a[i].zero += (c[i] == '0' ? 1 : 0);
-    }
-    return a;
-}, {});
-
 function o(set, pos) {
     var valueInCols = set.reduce((a, c) => {
         if (c[pos] == '1') {
