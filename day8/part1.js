@@ -79,9 +79,6 @@ input.forEach(i => {
             count++;
         }
     });
-
-    //throw new Error('a');
-
 });
 
 console.log(count);
