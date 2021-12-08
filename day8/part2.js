@@ -84,9 +84,6 @@ input.forEach(i => {
     //console.log(cnum);
 
     sum += cnum;
-
-    //throw new Error('a');
-
 });
 
 console.log(sum);
