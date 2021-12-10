@@ -2,8 +2,6 @@ var fs = require('fs');
 
 var input = fs.readFileSync('./input.txt', 'utf8').split('\r\n').map(n => n.split('').map(m => parseInt(m)));
 
-
-var risk = 0;
 var basins = [];
 
 for(var x = 0; x < input[0].length; x++) {
@@ -36,7 +34,7 @@ function explore(x, y) {
         return 0;
     }
     if (input[y][x] < 9) {
-        input[y][x] = 10;
+        input[y][x] = 9;
         var sum = 0;
         sum += explore(x+1, y);
         sum += explore(x-1, y);
@@ -54,3 +52,5 @@ basins.forEach(b => {
 basins.sort((a, b) => b.size - a.size);
 
 console.log(basins[0].size*basins[1].size*basins[2].size);
+
+console.log(input.map(i => i.join('')).join('\n'))
