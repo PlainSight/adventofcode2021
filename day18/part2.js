@@ -8,9 +8,6 @@ function checkExplode(n) {
 
     function visit(n) {
         if (Array.isArray(n)) {
-            if (stack.filter(s => s == 'd').length == 4) {
-
-            }
             stack.push('d');
             visit(n[0]);
             visit(n[1]);
@@ -18,7 +15,6 @@ function checkExplode(n) {
         } else {
             stack.push(n);
         }
-
     }
 
     visit(n);
@@ -71,12 +67,7 @@ rr:         for(var j = i+2; j < stack.length; j++) {
         }
     }
 
-    //console.log(stack);
-
     res = construct();
-
-    //console.log(JSON.stringify(n));
-    //console.log(JSON.stringify(res));
 
     return { n: res, did: did };
 }
