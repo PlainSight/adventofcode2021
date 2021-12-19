@@ -26,11 +26,11 @@ function permute(beacons) {
     // ['+x', '-x', '+y', '-y', '+z', '-z'];
     // polarity is what we multiply the index value and the non-neg value by
     var upinfo = [
-        { index: 2, polarity: 1 },
+        { index: 2, polarity: 1 }, // no shift +5 % 3 = 0
         { index: 2, polarity: -1 },
-        { index: 0, polarity: 1 },
+        { index: 0, polarity: 1 }, // left shift +5 % 3 = 1
         { index: 0, polarity: -1 },
-        { index: 1, polarity: 1 },
+        { index: 1, polarity: 1 }, // double left shift +2 % 3= 2
         { index: 1, polarity: -1 }
     ];
 
@@ -54,15 +54,18 @@ function permute(beacons) {
             beacons.forEach(b => {
                 var r = [0, 0, 0];
 
-                r[up.index] = b[up.index]*up.polarity;
+                var imapoff = [1, 2 ,0]
+                var offset = imapoff[up.index];
+
+                r[(up.index+offset)%3] = b[up.index]*up.polarity;
                 var others = [(up.index+1)%3, (up.index+2)%3];
 
                 var source = [b[others[0]], b[others[1]]];
                 var aa = [1, 1, -1, -1];
                 var bb = [1, -1, -1, 1];
 
-                r[others[0]] = source[angle%2]*aa[angle];
-                r[others[1]] = source[(angle+1)%2]*bb[angle];
+                r[(others[0]+offset)%3] = source[angle%2]*aa[angle];
+                r[(others[1]+offset)%3] = source[(angle+1)%2]*bb[angle];
 
                 perm.push(r);
             });
@@ -92,7 +95,7 @@ console.log(permute([[1, 2, 3]]));
 
 scanners.forEach((s1, i) => {
     scanners.forEach((s2, j) => {
-        if (i == 1 && j == 4) { // j > i
+        if (j > i) { // j > i -- i == 1 && j == 4
             var s2perm = permute(s2);
 
             var s1Map = {};
