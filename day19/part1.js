@@ -54,7 +54,7 @@ function permute(beacons) {
             beacons.forEach(b => {
                 var r = [0, 0, 0];
 
-                var imapoff = [1, 2 ,0]
+                var imapoff = [2, 1 ,0]
                 var offset = imapoff[up.index];
 
                 r[(up.index+offset)%3] = b[up.index]*up.polarity;
@@ -65,7 +65,7 @@ function permute(beacons) {
                 var bb = [1, -1, -1, 1];
 
                 r[(others[0]+offset)%3] = source[angle%2]*aa[angle];
-                r[(others[1]+offset)%3] = source[(angle+1)%2]*bb[angle];
+                r[(others[1]+offset)%3] = source[(angle+1)%2]*bb[angle]*up.polarity;
 
                 perm.push(r);
             });
@@ -121,13 +121,13 @@ scanners.forEach((s1, i) => {
                             perm.forEach(e => {
                                 if (s1Map[key(add(e, offset))]) {
                                     hits++;
-                                    if (i == 0 && j == 1) {
+                                    if (i == 1 && j == 4) {
                                         string += '   '+(key(add(e, offset)));
                                     }
                                 }
                             });
     
-                            if (hits > 1) {
+                            if (hits > 11) {
                                 console.log(i, j, hits, string);
                                 correlationFound = true;
                             }
