@@ -1,6 +1,4 @@
 var fs = require('fs');
-const { off } = require('process');
-
 var input = fs.readFileSync('./input.txt', 'utf8').split('\r\n\r\n');
 
 var scanners = [];
@@ -77,7 +75,7 @@ function permute(beacons) {
     return permutations;
 }
 
-var dupes = [];
+console.log(permute([[1, 2, 3]]));
 
 function key(e) {
     return e[0]+','+e[1]+','+e[2];
@@ -91,11 +89,16 @@ function add(a, b) {
     return [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
 }
 
-console.log(permute([[1, 2, 3]]));
 
-scanners.forEach((s1, i) => {
+var matched = {};
+
+function mkey (i, j) {
+    return [i, j].sort((a, b) => b-a).join(',');
+}
+
+function tryMatch(s1, i) {
     scanners.forEach((s2, j) => {
-        if (j > i) { // j > i -- i == 1 && j == 4
+        if (i != j && !matched[mkey(i, j)]) { // j > i -- i == 1 && j == 4
             var s2perm = permute(s2);
 
             var s1Map = {};
@@ -116,20 +119,20 @@ scanners.forEach((s1, i) => {
     
                             // hash the positions
                             var hits = 0;
-                            var string = '';
     
                             perm.forEach(e => {
-                                if (s1Map[key(add(e, offset))]) {
+                                var kk = key(add(e, offset));
+                                if (s1Map[kk]) {
                                     hits++;
-                                    if (i == 1 && j == 4) {
-                                        string += '   '+(key(add(e, offset)));
-                                    }
                                 }
                             });
     
                             if (hits > 11) {
-                                console.log(i, j, hits, string);
+                                console.log(i, j, hits);
                                 correlationFound = true;
+                                scanners[j] = perm.map(ppp => add(ppp, offset));
+                                matched[mkey(i, j)] = true;
+                                tryMatch(scanners[j], j);
                             }
                         });
                     }
@@ -137,4 +140,18 @@ scanners.forEach((s1, i) => {
             });
         }
     });
-});
+}
+
+tryMatch(scanners[0], 0);
+
+var relToZero = {};
+
+scanners.forEach(s => {
+    s.forEach(b => {
+        relToZero[key(b)] = true;
+    })
+})
+
+var scannerCount = Object.values(relToZero).length;
+
+console.log(scannerCount);
