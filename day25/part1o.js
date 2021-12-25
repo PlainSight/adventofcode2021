@@ -2,19 +2,26 @@ var fs = require('fs');
 
 var input = fs.readFileSync('./input.txt', 'utf8').split('\r\n');
 
-var cucumbers = [];
+var cucumbers = {};
+var carray = [];
 
 var width = input[0].length;
 var height = input.length;
 
+function k(c) {
+    return c.x+','+c.y;
+}
+
 input.forEach((i, y) => {
     i.split('').forEach((ii, x) => {
         if (ii != '.') {
-            cucumbers.push({
+            var c = {
                 type: ii,
                 x: x,
                 y: y
-            })
+            };
+            carray.push(c);
+            cucumbers[k(c)] = true;
         }
     })
 });
@@ -22,14 +29,12 @@ input.forEach((i, y) => {
 function isClearToMove(c) {
     if (c.type == '>') {
         var nx = (c.x + 1) % width;
-        return cucumbers.filter(cc => cc.x == nx && cc.y == c.y).length == 0;
+        return !cucumbers[nx+','+c.y];
     } else {
         var ny = (c.y + 1) % height;
-        return cucumbers.filter(cc => cc.x == c.x && cc.y == ny).length == 0;
+        return !cucumbers[c.x+','+ny];
     }
 }
-
-console.log(cucumbers);
 
 // east then
 // south
@@ -37,19 +42,22 @@ var moved = true;
 var step = 0;
 while(moved) {
     step++;
-    console.log(step);
     moved = false;
 
-    var rightMovers = cucumbers.filter(c => c.type == '>' && isClearToMove(c));
+    var rightMovers = carray.filter(c => c.type == '>' && isClearToMove(c));
     rightMovers.forEach(c => {
+        cucumbers[k(c)] = false;
         moved = true;
         c.x = (c.x + 1) % width;
+        cucumbers[k(c)] = true;
     });
 
-    var downMovers = cucumbers.filter(c => c.type == 'v' && isClearToMove(c));
+    var downMovers = carray.filter(c => c.type == 'v' && isClearToMove(c));
     downMovers.forEach(c => {
+        cucumbers[k(c)] = false;
         moved = true;
         c.y = (c.y + 1) % height;
+        cucumbers[k(c)] = true;
     });
 
     // for(var y = 0; y < height; y++) {
